@@ -15,6 +15,8 @@
   nix,
   nix-prefetch-github,
   perl,
+  pnpmConfigHook,
+  fetchPnpmDeps,
 }:
 
 let
@@ -45,7 +47,7 @@ stdenv.mkDerivation (finalAttrs: {
       --replace-fail '"@types/react": "18.3.1"' '"@types/react": "19.0.12"'
   '';
 
-  pnpmDeps = pnpm_10.fetchDeps {
+  pnpmDeps = fetchPnpmDeps {
     inherit (finalAttrs)
       pname
       src
@@ -60,7 +62,7 @@ stdenv.mkDerivation (finalAttrs: {
     gitMinimal
     nodejs_22
     pnpm_10
-    pnpm_10.configHook
+    pnpmConfigHook
   ];
 
   env = {

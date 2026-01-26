@@ -14,6 +14,8 @@
   nix,
   nix-prefetch-github,
   perl,
+  pnpmConfigHook,
+  fetchPnpmDeps,
 }:
 
 let
@@ -32,7 +34,7 @@ stdenv.mkDerivation (finalAttrs: {
     inherit hash;
   };
 
-  pnpmDeps = pnpm_10.fetchDeps {
+  pnpmDeps = fetchPnpmDeps {
     inherit (finalAttrs) pname version src;
     hash = pnpmDeps;
     fetcherVersion = 2;
@@ -42,7 +44,7 @@ stdenv.mkDerivation (finalAttrs: {
     git
     nodejs
     pnpm_10
-    pnpm_10.configHook
+    pnpmConfigHook
   ];
 
   env = {
