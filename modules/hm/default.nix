@@ -292,6 +292,13 @@ in
             pluginNameMigrations
             ;
         };
+
+        assertions = [
+          {
+            assertion = !(cfg.discord.vencord.enable && cfg.discord.equicord.enable);
+            message = "programs.nixcord.discord.vencord.enable and programs.nixcord.discord.equicord.enable cannot both be enabled at the same time. They are mutually exclusive.";
+          }
+        ];
       }
     ])
   );
