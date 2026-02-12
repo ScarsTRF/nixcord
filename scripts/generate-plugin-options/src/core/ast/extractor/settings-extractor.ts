@@ -17,7 +17,8 @@ import { extractSettingsFromPropertyIterable } from './settings-extractor-core.j
 export function extractSettingsFromCall(
   node: CallExpression | undefined,
   checker: TypeChecker,
-  program: Program
+  program: Program,
+  pluginName?: string
 ): Record<string, PluginSetting | PluginConfig> {
   const settings: Record<string, PluginSetting | PluginConfig> = {};
 
@@ -43,15 +44,28 @@ export function extractSettingsFromCall(
   // Navigator gives us a consistent iterable of property assignments even when the plugin mixes spreads,
   // computed keys, or nested objects; feed that into the shared extraction pipeline
   const propertyAssignments = findAllPropertyAssignments(objLiteral);
-  return extractSettingsFromPropertyIterable(propertyAssignments, checker, program, true);
+  return extractSettingsFromPropertyIterable(
+    propertyAssignments,
+    checker,
+    program,
+    true,
+    pluginName
+  );
 }
 
 export function extractSettingsFromObject(
   obj: ObjectLiteralExpression,
   checker: TypeChecker,
-  program: Program
+  program: Program,
+  pluginName?: string
 ): Record<string, PluginSetting | PluginConfig> {
   // Same navigator trick as above, but this version is used when we already have the literal expression
   const propertyAssignments = findAllPropertyAssignments(obj);
-  return extractSettingsFromPropertyIterable(propertyAssignments, checker, program, false);
+  return extractSettingsFromPropertyIterable(
+    propertyAssignments,
+    checker,
+    program,
+    false,
+    pluginName
+  );
 }

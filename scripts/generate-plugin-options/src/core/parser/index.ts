@@ -185,7 +185,7 @@ async function parseSinglePlugin(
   }
 
   const settings = settingsCall
-    .map((call) => extractSettingsFromCall(call, typeChecker, project.getProgram()))
+    .map((call) => extractSettingsFromCall(call, typeChecker, project.getProgram(), pluginName))
     .unwrapOr({});
 
   const pluginConfig: PluginConfig = {
