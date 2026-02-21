@@ -199,8 +199,14 @@ let
       vesktopCopies =
         lib.optionals cfg.vesktop.enable [
           (mkCopy vesktopSettingsFile "${cfg.vesktop.configDir}/settings/settings.json")
+        ]
+        ++ lib.optionals (cfg.vesktop.enable && vesktopClientSettingsFile != null) [
           (mkCopy vesktopClientSettingsFile "${cfg.vesktop.configDir}/settings.json")
+        ]
+        ++ lib.optionals (cfg.vesktop.enable && vesktopStateFile != null) [
           (mkCopy vesktopStateFile "${cfg.vesktop.configDir}/state.json")
+        ]
+        ++ lib.optionals cfg.vesktop.enable [
           lib.mapAttrsToList
           (name: path: mkCopy path "${cfg.vesktop.configDir}/themes/${name}.css")
           vesktopThemes
@@ -212,14 +218,18 @@ let
       equibopCopies =
         lib.optionals cfg.equibop.enable [
           (mkCopy equibopSettingsFile "${cfg.equibop.configDir}/settings/settings.json")
+        ]
+        ++ lib.optionals (cfg.equibop.enable && equibopClientSettingsFile != null) [
           (mkCopy equibopClientSettingsFile "${cfg.equibop.configDir}/settings.json")
+        ]
+        ++ lib.optionals (cfg.equibop.enable && equibopStateFile != null) [
           (mkCopy equibopStateFile "${cfg.equibop.configDir}/state.json")
         ]
         ++ lib.optionals quickCssOnEquibop [
           (mkCopy quickCssFile "${cfg.equibop.configDir}/settings/quickCss.css")
         ];
 
-      dorionCopies = lib.optionals cfg.dorion.enable [
+      dorionCopies = lib.optionals (cfg.dorion.enable && dorionConfigFile != null) [
         (mkCopy dorionConfigFile "${cfg.dorion.configDir}/config.json")
       ];
     in

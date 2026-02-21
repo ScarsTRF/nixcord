@@ -100,7 +100,8 @@ export function extractSettingsFromPropertyIterable(
   properties: Iterable<PropertyAssignment>,
   checker: TypeChecker,
   program: Program,
-  skipHiddenCheck: boolean = false
+  skipHiddenCheck: boolean = false,
+  pluginName?: string
 ): Record<string, PluginSetting | PluginConfig> {
   const settings: Record<string, PluginSetting | PluginConfig> = {};
 
@@ -144,7 +145,8 @@ export function extractSettingsFromPropertyIterable(
         nestedProperties,
         checker,
         program,
-        false
+        false,
+        pluginName
       );
       settings[key] = {
         name: key,
@@ -172,7 +174,15 @@ export function extractSettingsFromPropertyIterable(
         finalNixType,
         selectEnumValues,
         defaultValue: inferredDefault,
-      } = inferNixTypeAndEnumValues(valueObjValue, props, rawSetting, checker, program);
+      } = inferNixTypeAndEnumValues(
+        valueObjValue,
+        props,
+        rawSetting,
+        checker,
+        program,
+        pluginName,
+        key
+      );
 
       const { finalNixType: resolvedNixType, defaultValue } = resolveDefaultValue(
         valueObjValue,

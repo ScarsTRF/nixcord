@@ -41,10 +41,20 @@ export function inferNixTypeAndEnumValues(
     options?: readonly (string | number | boolean)[] | undefined;
   },
   checker: TypeChecker,
-  program: Program
+  program: Program,
+  pluginName?: string,
+  settingName?: string
 ): TypeInferenceResult {
   // Step 1: Read whatever the TS annotations and option arrays already tell us
-  let state = inferInitialType(valueObj, props, rawSetting, checker, program);
+  let state = inferInitialType(
+    valueObj,
+    props,
+    rawSetting,
+    checker,
+    program,
+    pluginName,
+    settingName
+  );
 
   // Step 2: Normalize COMPONENT/CUSTOM types into attrs when they clearly represent objects
   // Do this before array inference so the list logic sees the right base type

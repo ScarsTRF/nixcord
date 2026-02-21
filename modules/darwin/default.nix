@@ -311,12 +311,8 @@ in
             # Vesktop files
             ${lib.optionalString cfg.vesktop.enable ''
               ${mkCopy vesktopSettingsFile "${cfg.vesktop.configDir}/settings/settings.json"}
-              ${mkCopy vesktopClientSettingsFile "${cfg.vesktop.configDir}/settings.json"}
-              ${lib.optionalString (cfg.vesktop.settings != { }) (
+              ${lib.optionalString (vesktopClientSettingsFile != null) (
                 mkCopy vesktopClientSettingsFile "${cfg.vesktop.configDir}/settings.json"
-              )}
-              ${lib.optionalString (cfg.vesktop.state != { }) (
-                mkCopy vesktopStateFile "${cfg.vesktop.configDir}/state.json"
               )}
               ${lib.optionalString (useQuickCss cfg.vesktopConfig) (
                 mkCopy quickCssFile "${cfg.vesktop.configDir}/settings/quickCss.css"
@@ -331,11 +327,10 @@ in
             # Equibop files
             ${lib.optionalString cfg.equibop.enable ''
               ${mkCopy equibopSettingsFile "${cfg.equibop.configDir}/settings/settings.json"}
-              ${mkCopy equibopClientSettingsFile "${cfg.equibop.configDir}/settings.json"}
-              ${lib.optionalString (cfg.equibop.settings != { }) (
+              ${lib.optionalString (equibopClientSettingsFile != null) (
                 mkCopy equibopClientSettingsFile "${cfg.equibop.configDir}/settings.json"
               )}
-              ${lib.optionalString (cfg.equibop.state != { }) (
+              ${lib.optionalString (equibopStateFile != null) (
                 mkCopy equibopStateFile "${cfg.equibop.configDir}/state.json"
               )}
               ${lib.optionalString (useQuickCss cfg.equibopConfig) (
@@ -344,7 +339,7 @@ in
             ''}
 
             # Dorion files
-            ${lib.optionalString cfg.dorion.enable (
+            ${lib.optionalString (cfg.dorion.enable && dorionConfigFile != null) (
               mkCopy dorionConfigFile "${cfg.dorion.configDir}/config.json"
             )}
           ''
@@ -364,6 +359,13 @@ in
             ;
           deprecatedPlugins = collectDeprecatedPlugins cfg.config;
         };
+
+        assertions = [
+          {
+            assertion = !(cfg.discord.vencord.enable && cfg.discord.equicord.enable);
+            message = "programs.nixcord.discord.vencord.enable and programs.nixcord.discord.equicord.enable cannot both be enabled at the same time. They are mutually exclusive.";
+          }
+        ];
       }
     ])
   );

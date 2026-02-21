@@ -45,7 +45,9 @@ export function inferInitialType(
     options?: readonly (string | number | boolean)[] | undefined;
   },
   checker: TypeChecker,
-  program: Program
+  program: Program,
+  pluginName?: string,
+  settingName?: string
 ): InferenceState {
   const { nixType, enumValues } = tsTypeToNixType(rawSetting, program, checker);
   const astEnumResult = extractSelectOptions(valueObj, checker);
@@ -78,7 +80,14 @@ export function inferInitialType(
       selectEnumValues = undefined;
     })
     .with([false, true], () => {
-      finalNixType = NIX_ENUM_TYPE;
+      // Special case: shikiCodeblocks' theme setting should be str, not enum
+      // because theme URLs change on every update and manual fixing is required
+      if (pluginName === 'ShikiCodeblocks' && settingName === 'theme') {
+        finalNixType = 'types.str';
+        selectEnumValues = undefined;
+      } else {
+        finalNixType = NIX_ENUM_TYPE;
+      }
     })
     .otherwise(() => {
       // Leave enum info alone when neither condition matches
